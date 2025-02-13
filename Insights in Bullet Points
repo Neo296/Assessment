@@ -1,0 +1,108 @@
+--Total Revenue = 404962
+SELECT SUM(TransactionAmount) AS TotalRevenue
+FROM Transaction_Analysis;  
+
+--Average Transaction Amount = 22553.435620280421
+SELECT AVG(TransactionAmount) AS AvgTransactionAmount
+FROM Transaction_Analysis;
+
+
+--Total Transactions = 404962
+SELECT COUNT(TransactionID) AS TotalTransactions
+FROM Transaction_Analysis;
+
+--Total Quantity Sold = 2921031
+SELECT SUM(Quantity) AS TotalQuantitySold
+FROM Transaction_Analysis;
+
+--Total Promotional Sales = 4567962235.52
+SELECT SUM(TransactionAmount) AS TotalPromotionalSales
+FROM Transaction_Analysis
+WHERE IsPromotional = TRUE;
+
+--Top 5 Products by Revenue = "Laptop"	5603539389.87,"Sofa"	3395935419.47,"T-Shirt"	92049606.82,"Notebook"	21680908.29,"Apple"	20079071.21
+SELECT ProductName, SUM(TransactionAmount) AS TotalRevenue
+FROM Transaction_Analysis
+GROUP BY ProductName
+ORDER BY TotalRevenue DESC
+LIMIT 5;
+
+
+
+--Customer with Highest Spending = 32460	61	"Other"	799343.98
+SELECT CustomerID, CustomerAge, CustomerGender, SUM(TransactionAmount) AS TotalSpent
+FROM Transaction_Analysis
+GROUP BY CustomerID, CustomerAge, CustomerGender
+ORDER BY TotalSpent DESC
+LIMIT 1;
+
+
+--Average Feedback Score = 3.0010099713059497
+SELECT AVG(FeedbackScore) AS AvgFeedbackScore
+FROM Transaction_Analysis;
+
+--Revenue by Region = "South"	2563117264.31,"West"	1658542585.09,"East"	1652798797.77,"North"	1642495910.79,null	1616329837.70
+SELECT Region, SUM(TransactionAmount) AS TotalRevenue
+FROM Transaction_Analysis
+GROUP BY Region
+ORDER BY TotalRevenue DESC;
+
+
+
+----Revenue by Store Type = "In-Store"	4572565019.49,"Online"	4560719376.17
+SELECT StoreType, SUM(TransactionAmount) AS TotalRevenue
+FROM Transaction_Analysis
+GROUP BY StoreType
+ORDER BY TotalRevenue DESC;
+
+----Monthly Revenue Trend = "2022-01-01 00:00:00"	810611917.75, "2022-02-01 00:00:00"	740495275.87, "2022-03-01 00:00:00"	815034907.57........."2022-11-01 00:00:00"	796168502.96,"2022-12-01 00:00:00"	340709140.18
+SELECT 
+    DATE_TRUNC('month', TransactionDate) AS Month,
+    SUM(TransactionAmount) AS MonthlyRevenue
+FROM Transaction_Analysis
+GROUP BY DATE_TRUNC('month', TransactionDate)
+ORDER BY Month;
+
+
+----Average Delivery Time = 4.9890310695818373
+SELECT AVG(DeliveryTimeDays) AS AvgDeliveryTime
+FROM Transaction_Analysis;
+
+
+----Customers with Maximum Loyalty Points = 34072	21	"Male"	9999, 9997	53	"Male"	9999......8 more results
+SELECT CustomerID, CustomerAge, CustomerGender, MAX(LoyaltyPoints) AS MaxLoyaltyPoints
+FROM Transaction_Analysis
+GROUP BY CustomerID, CustomerAge, CustomerGender
+ORDER BY MaxLoyaltyPoints DESC
+LIMIT 10;
+
+
+----Gender-wise Revenue Contribution = "Female"	2788377833.70, "Male"	2766116064.20,"Other"	2752089010.33,null	826701487.43
+SELECT CustomerGender, SUM(TransactionAmount) AS TotalRevenue
+FROM Transaction_Analysis
+GROUP BY CustomerGender
+ORDER BY TotalRevenue DESC;
+
+----Most Popular Product = "Apple"	2067019
+SELECT ProductName, SUM(Quantity) AS TotalQuantity
+FROM Transaction_Analysis
+GROUP BY ProductName
+ORDER BY TotalQuantity DESC
+LIMIT 1;
+
+--City with Highest Sales = "Kolkata"	925311574.10
+SELECT City, SUM(TransactionAmount) AS TotalSales
+FROM Transaction_Analysis
+GROUP BY City
+ORDER BY TotalSales DESC
+LIMIT 1;
+
+----Discount Impact on Revenue = "No Discount"	704789.35, "With Discount"	9132579606.31
+SELECT 
+    CASE 
+        WHEN DiscountPercent > 0 THEN 'With Discount'
+        ELSE 'No Discount'
+    END AS DiscountStatus,
+    SUM(TransactionAmount) AS TotalRevenue
+FROM Transaction_Analysis
+GROUP BY DiscountStatus;
